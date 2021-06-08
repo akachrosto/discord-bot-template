@@ -3,10 +3,10 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 //.env
-require('dotenv').config()
+require('dotenv').config();
 
 //Prefijo
-let prefix = process.env.PREFIX
+let prefix = process.env.PREFIX || "!";
 
 // Ready
 client.on('ready', ()  => {
