@@ -1,0 +1,20 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+const config = require('config.json')
+
+client.on('ready',()  => {
+
+	console.log(client.user.tag, "se ha iniciado correctamente");
+	
+});
+
+client.on('message', (message) => {
+
+	if(message.content.startsWith(config.prefix + "ping")){
+		message.channel.send("Pong!");
+	};
+
+});
+
+client.login(config.token);
