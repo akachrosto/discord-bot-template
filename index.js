@@ -1,20 +1,28 @@
+// Discord
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const config = require('config.json')
+//.env
+require('dotenv').config()
 
-client.on('ready',()  => {
+//Prefijo
+let prefix = process.env.PREFIX
 
-	console.log(client.user.tag, "se ha iniciado correctamente");
-	
+// Ready
+client.on('ready', ()  => {
+
+	console.log(client.user.tag, 'se ha iniciado correctamente');
+
 });
 
-client.on('message', (message) => {
+// Message
+client.on('message', message => {
 
-	if(message.content.startsWith(config.prefix + "ping")){
+	if(message.content.startsWith(prefix + "ping")){
 		message.channel.send("Pong!");
 	};
 
 });
 
-client.login(config.token);
+// Login
+client.login(process.env.TOKEN);
