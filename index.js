@@ -5,24 +5,41 @@ const client = new Discord.Client();
 //.env
 require('dotenv').config();
 
-//Prefijo
-let prefix = process.env.PREFIX || "!";
+// FS
+let { readdirSync } = require('fs'); 
 
-// Ready
-client.on('ready', ()  => {
+// Config
+client.config = require('./config.js'); 
 
-	console.log(client.user.tag, 'se ha iniciado correctamente');
+// Colección
+client.comandos = new Discord.Collection();  
 
-});
+// Comandos
 
-// Message
-client.on('message', message => {
+for(const file of readdirSync('./comandos/')) { 
+  if(file.endsWith(".js")) { 
+  let fileName = file.substring(0, file.length - 3); 
+  let fileContents = require(`./comandos/${file}`); 
+  client.comandos.set(fileName, fileContents);
+  };
+};
 
-	if(message.content.startsWith(prefix + "ping")){
-		message.channel.send("Pong!");
-	};
+// Eventos
 
-});
+for(const file of readdirSync('./eventos/')) { 
+  if(file.endsWith(".js")){
+  let fileName = file.substring(0, file.length - 3); 
+  let fileContents = require(`./eventos/${file}`); 
+  client.on(fileName, fileContents.bind(null, client)); 
+  delete require.cache[require.resolve(`./eventos/${file}`)]; 
+  };
+};
 
 // Login
-client.login(process.env.TOKEN);
+client.login(client.config.token)
+  .then(() => { 
+    console.log(`Estoy listo, soy ${client.user.tag}`);
+  })
+  .catch((err) => {
+    console.error("Error al iniciar sesión: " + err);
+});
